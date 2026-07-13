@@ -65,11 +65,23 @@
 
     /* ---------- Hero ---------- */
     .hero { position: relative; min-height: 100vh; display: flex; align-items: center; overflow: hidden; }
-    #curve { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+    .hero-orbits {
+      position: absolute; top: 46%; left: 50%; transform: translate(-50%, -50%);
+      width: min(86vh, 700px); height: min(86vh, 700px);
+      z-index: 0; pointer-events: none;
+    }
+    .hero-orbits .orb circle { fill: var(--violet-2); filter: drop-shadow(0 0 7px rgba(139, 125, 255, 0.75)); }
+    .hero-orbits .orb { transform-origin: 450px 450px; }
+    @media (prefers-reduced-motion: no-preference) {
+      .orb1 { animation: orbit 46s linear infinite; }
+      .orb2 { animation: orbit 74s linear infinite reverse; }
+      .orb3 { animation: orbit 98s linear infinite; }
+      @keyframes orbit { to { transform: rotate(360deg); } }
+    }
     .hero::after {
       content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
       background:
-        radial-gradient(58% 42% at 50% 47%, rgba(10,10,18,0.82) 0%, rgba(10,10,18,0.35) 55%, rgba(10,10,18,0) 82%),
+        radial-gradient(58% 42% at 50% 47%, rgba(10,10,18,0.5) 0%, rgba(10,10,18,0.18) 55%, rgba(10,10,18,0) 82%),
         radial-gradient(120% 95% at 50% 45%, rgba(10,10,18,0) 45%, rgba(10,10,18,0.5) 80%, rgba(10,10,18,0.92) 100%),
         linear-gradient(180deg, rgba(10,10,18,0.55) 0%, rgba(10,10,18,0) 22%);
     }
@@ -202,7 +214,16 @@
 
   <!-- Hero -->
   <section class="hero">
-    <canvas id="curve" aria-hidden="true"></canvas>
+    <svg class="hero-orbits" viewBox="0 0 900 900" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="#8b7dff">
+        <circle cx="450" cy="450" r="150" stroke-opacity="0.16"/>
+        <circle cx="450" cy="450" r="255" stroke-opacity="0.10"/>
+        <circle cx="450" cy="450" r="360" stroke-opacity="0.06"/>
+      </g>
+      <g class="orb orb1"><circle cx="450" cy="300" r="5.5"/></g>
+      <g class="orb orb2"><circle cx="450" cy="195" r="4"/></g>
+      <g class="orb orb3"><circle cx="450" cy="90" r="3.5"/></g>
+    </svg>
     <div class="wrap">
       <span class="eyebrow mono">Independent Game Studio</span>
       <h1>Determinix Studio</h1>
@@ -210,7 +231,6 @@
       <div class="hero-stats">
         <div class="s"><div class="v">01</div><div class="k">Title</div></div>
         <div class="s"><div class="v">iOS &amp; Android</div><div class="k">Platforms</div></div>
-        <div class="s"><div class="v">Wyoming, USA</div><div class="k">Based</div></div>
       </div>
     </div>
     <a href="#games" class="scroll-cue"><span class="lbl">Games</span><span aria-hidden="true">&darr;</span></a>
@@ -338,81 +358,6 @@
     // Header background on scroll
     const header = document.getElementById('siteHeader');
     addEventListener('scroll', () => header.classList.toggle('scrolled', scrollY > 40), { passive: true });
-
-    // ---- Deterministic curve (harmonograph) — a fixed seed, the same path every time ----
-    const canvas = document.getElementById('curve');
-    const ctx = canvas.getContext('2d');
-    let W, H, DPR, cx, cy, scale;
-
-    // Fixed "seed" — a deterministic spirograph rosette that spirals inward.
-    // No randomness: the same figure, traced the same way, every load.
-    const ROSE = { A: 1.0, B: 0.42, k: 6.0, phi: 0.0, d: 0.0075 };
-    let pts = [];
-
-    function buildPoints() {
-      pts = [];
-      const dt = 0.07, T = 240;
-      for (let t = 0; t <= T; t += dt) {
-        const e = Math.exp(-ROSE.d * t);
-        const x = e * (ROSE.A * Math.cos(t) + ROSE.B * Math.cos(ROSE.k * t + ROSE.phi));
-        const y = e * (ROSE.A * Math.sin(t) + ROSE.B * Math.sin(ROSE.k * t + ROSE.phi));
-        pts.push([x, y]);
-      }
-    }
-
-    function resize() {
-      DPR = Math.min(window.devicePixelRatio || 1, 2);
-      W = canvas.clientWidth; H = canvas.clientHeight;
-      canvas.width = W * DPR; canvas.height = H * DPR;
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      cx = W / 2; cy = H * 0.46;
-      scale = Math.min(W, H) * 0.32 / 1.42;
-    }
-
-    function project(pt) { return [cx + pt[0] * scale, cy + pt[1] * scale]; }
-
-    function drawPath(from, to, style, width, glow) {
-      ctx.beginPath();
-      for (let i = from; i < to; i++) {
-        const [x, y] = project(pts[i]);
-        if (i === from) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = style; ctx.lineWidth = width;
-      ctx.shadowBlur = glow; ctx.shadowColor = 'rgba(139,125,255,0.8)';
-      ctx.lineJoin = 'round'; ctx.stroke();
-      ctx.shadowBlur = 0;
-    }
-
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let idx = 0, holding = 0;
-
-    function frame() {
-      ctx.clearRect(0, 0, W, H);
-      // ghost of the full, deterministic figure
-      drawPath(0, pts.length, 'rgba(139,125,255,0.08)', 1, 0);
-      // the bright tracer
-      drawPath(0, idx, 'rgba(184,170,255,0.7)', 1.3, 7);
-      // the head — a single determined point, echoing the logo
-      if (idx > 0 && idx < pts.length) {
-        const [hx, hy] = project(pts[idx - 1]);
-        ctx.beginPath(); ctx.arc(hx, hy, 3, 0, Math.PI * 2);
-        ctx.fillStyle = '#fff'; ctx.shadowBlur = 16; ctx.shadowColor = 'rgba(139,125,255,0.9)'; ctx.fill(); ctx.shadowBlur = 0;
-      }
-      idx += 10;
-      if (idx >= pts.length) {
-        idx = pts.length;
-        if (++holding > 150) { idx = 0; holding = 0; }  // hold, then retrace the same path
-      }
-      requestAnimationFrame(frame);
-    }
-
-    function start() {
-      resize(); buildPoints();
-      if (reduce) { ctx.clearRect(0,0,W,H); drawPath(0, pts.length, 'rgba(160,146,255,0.55)', 1.3, 6); }
-      else requestAnimationFrame(frame);
-    }
-    addEventListener('resize', () => { resize(); if (reduce) { ctx.clearRect(0,0,W,H); drawPath(0, pts.length, 'rgba(160,146,255,0.55)', 1.3, 6); } });
-    start();
   </script>
 </body>
 </html>

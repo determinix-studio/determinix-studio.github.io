@@ -3,8 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Account - Determinix Studio</title>
+  <title>Your Account · Determinix Studio</title>
+  <link rel="icon" href="/assets/mark.svg">
   <style>
+    .brand-lockup {
+      display: flex;
+      width: fit-content;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+    }
+    .brand-lockup .name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: #fff;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -333,6 +349,10 @@
 <body>
   <div class="container">
     <header>
+      <a href="/" class="brand-lockup" aria-label="Determinix Studio home">
+        <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="#8b7dff" stroke-width="2.4" stroke-linecap="round"><path d="M11 7.4 V24.6"/><circle cx="19" cy="16" r="8"/></g><circle cx="19" cy="8" r="2.2" fill="#8b7dff"/></svg>
+        <span class="name">Determinix Studio</span>
+      </a>
       <a href="/" class="back-link">&larr; Back to Home</a>
       <h1>Your Account</h1>
     </header>

@@ -4,522 +4,237 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Determinix Studio — Game Development</title>
-  <meta name="description" content="Determinix Studio is an independent game studio building original games for iOS and Android. Part of Determinix Holdings LLC.">
+  <meta name="description" content="Determinix Studio is an independent game studio building original, systems-driven games for iOS and Android. The games division of Determinix Holdings LLC.">
+  <link rel="icon" href="/assets/mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;450;500&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg: #0a0a0f;
+      --bg: #0a0a12;
+      --bg-2: #0e0e1a;
       --text: #ffffff;
-      --muted: rgba(255, 255, 255, 0.7);
-      --faint: rgba(255, 255, 255, 0.45);
+      --muted: rgba(255, 255, 255, 0.66);
+      --faint: rgba(255, 255, 255, 0.4);
       --line: rgba(255, 255, 255, 0.1);
       --card: rgba(255, 255, 255, 0.03);
       --card-border: rgba(255, 255, 255, 0.08);
-      --accent: #8b7dff;
+      --violet: #8b7dff;
+      --violet-2: #b8aaff;
+
+      --display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      --body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --mono: 'Space Mono', 'Courier New', monospace;
+      --maxw: 1120px;
     }
 
-    html {
-      scroll-behavior: smooth;
-      overflow-x: hidden;
-    }
-
+    html { scroll-behavior: smooth; overflow-x: hidden; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      font-family: var(--body);
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
+      line-height: 1.6;
       overflow-x: hidden;
       max-width: 100%;
-      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
     }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; border-radius: 2px; }
 
-    #starfield {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
+    .mono { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; }
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: 2.5rem; }
 
-    /* ---------- Top nav ---------- */
-    .topbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.25rem 2rem;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      background: rgba(10, 10, 15, 0.4);
+    /* ---------- Header ---------- */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 30;
+      transition: background 0.3s ease, border-color 0.3s ease;
       border-bottom: 1px solid transparent;
-      transition: border-color 0.3s ease, background 0.3s ease;
     }
-
-    .topbar.scrolled {
-      background: rgba(10, 10, 15, 0.8);
-      border-bottom-color: var(--line);
-    }
-
-    .brand {
-      font-size: 0.9rem;
-      font-weight: 400;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: #fff;
-      text-decoration: none;
-    }
-
-    .topbar nav {
-      display: flex;
-      gap: 1.75rem;
-    }
-
-    .topbar nav a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.8rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      transition: color 0.3s ease;
-    }
-
-    .topbar nav a:hover {
-      color: #fff;
-    }
+    .site-header.scrolled { background: rgba(10, 10, 18, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom-color: var(--line); }
+    .site-header .wrap { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+    .lockup { display: flex; align-items: center; gap: 0.7rem; }
+    .lockup .mark { width: 30px; height: 30px; }
+    .lockup .words { display: flex; flex-direction: column; line-height: 1; }
+    .lockup .name { font-family: var(--display); font-weight: 600; font-size: 0.98rem; letter-spacing: 0.05em; }
+    .lockup .sub { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.34em; color: var(--faint); margin-top: 3px; }
+    .site-nav { display: flex; align-items: center; gap: 2rem; }
+    .site-nav a { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); transition: color 0.2s ease; }
+    .site-nav a:hover { color: #fff; }
 
     /* ---------- Hero ---------- */
-    .hero {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
+    .hero { position: relative; min-height: 100vh; display: flex; align-items: center; overflow: hidden; }
+    #curve { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+    .hero::after {
+      content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background:
+        radial-gradient(58% 42% at 50% 47%, rgba(10,10,18,0.82) 0%, rgba(10,10,18,0.35) 55%, rgba(10,10,18,0) 82%),
+        radial-gradient(120% 95% at 50% 45%, rgba(10,10,18,0) 45%, rgba(10,10,18,0.5) 80%, rgba(10,10,18,0.92) 100%),
+        linear-gradient(180deg, rgba(10,10,18,0.55) 0%, rgba(10,10,18,0) 22%);
     }
-
-    .hero .logo {
-      font-size: clamp(2.5rem, 8vw, 4.5rem);
-      font-weight: 300;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      line-height: 1.1;
+    .hero .wrap { position: relative; z-index: 2; width: 100%; text-align: center; padding-block: 6rem; }
+    .hero .eyebrow { color: var(--violet-2); margin-bottom: 1.75rem; display: inline-block; }
+    .hero h1 {
+      font-family: var(--display); font-weight: 500;
+      font-size: clamp(2.6rem, 8vw, 5rem); letter-spacing: 0.14em; text-transform: uppercase; line-height: 1.05;
     }
-
-    .hero .tagline {
-      margin-top: 1.75rem;
-      max-width: 32ch;
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
-      font-weight: 300;
-      color: var(--muted);
-      letter-spacing: 0.02em;
+    .hero .tagline { margin: 1.75rem auto 0; max-width: 40ch; color: var(--muted); font-size: clamp(1rem, 2.2vw, 1.2rem); font-weight: 300; }
+    .hero-stats {
+      display: inline-flex; gap: 2.5rem; margin-top: 2.75rem; padding-top: 1.75rem;
+      border-top: 1px solid var(--line);
     }
-
-    .hero .eyebrow {
-      margin-bottom: 1.5rem;
-      font-size: 0.75rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--faint);
-    }
-
-    .scroll-cue {
-      position: absolute;
-      bottom: 2.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      color: var(--faint);
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      animation: float 2.4s ease-in-out infinite;
-    }
-
-    .scroll-cue span {
-      font-size: 1rem;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.6; }
-      50% { transform: translateX(-50%) translateY(6px); opacity: 1; }
-    }
+    .hero-stats .s .v { font-family: var(--display); font-weight: 600; font-size: 1.1rem; }
+    .hero-stats .s .k { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-top: 0.3rem; }
+    .scroll-cue { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 2; color: var(--faint); display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+    .scroll-cue .lbl { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; }
+    @media (prefers-reduced-motion: no-preference) { .scroll-cue { animation: bob 2.4s ease-in-out infinite; } @keyframes bob { 0%,100%{transform:translateX(-50%) translateY(0);opacity:.6} 50%{transform:translateX(-50%) translateY(6px);opacity:1} } }
 
     /* ---------- Sections ---------- */
-    section {
-      position: relative;
-      z-index: 1;
-    }
+    .section { position: relative; z-index: 2; background: var(--bg); border-top: 1px solid var(--line); }
+    .section .wrap { padding-block: clamp(4.5rem, 8vw, 7rem); }
+    .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; margin-bottom: 3rem; flex-wrap: wrap; }
+    .section-label { color: var(--violet); }
+    .section-title { font-family: var(--display); font-weight: 500; font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -0.01em; line-height: 1.05; margin-top: 0.75rem; }
+    .section-note { color: var(--muted); max-width: 48ch; margin-top: 0.9rem; }
 
-    .section-inner {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 6rem 2rem;
-    }
-
-    .section-band {
-      background: linear-gradient(180deg, rgba(10, 10, 15, 0) 0%, rgba(13, 13, 22, 0.85) 12%, rgba(13, 13, 22, 0.85) 88%, rgba(10, 10, 15, 0) 100%);
-    }
-
-    .section-label {
-      font-size: 0.75rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      font-size: clamp(1.75rem, 4vw, 2.5rem);
-      font-weight: 300;
-      letter-spacing: 0.06em;
-      margin-bottom: 1.5rem;
-    }
-
-    /* ---------- Company ---------- */
-    .company-grid {
-      display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: 3rem;
-      align-items: start;
-    }
-
-    .company-copy p {
-      color: var(--muted);
-      margin-bottom: 1.25rem;
-      max-width: 60ch;
-    }
-
-    .company-copy p:last-child {
-      margin-bottom: 0;
-    }
-
-    .company-copy strong {
-      color: #fff;
-      font-weight: 500;
-    }
-
-    .info-card {
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 2rem;
-    }
-
-    .info-card h3 {
-      font-size: 0.75rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--faint);
-      margin-bottom: 1.25rem;
-      font-weight: 500;
-    }
-
-    .info-row {
-      margin-bottom: 1.25rem;
-    }
-
-    .info-row:last-child {
-      margin-bottom: 0;
-    }
-
-    .info-row .k {
-      display: block;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--faint);
-      margin-bottom: 0.25rem;
-    }
-
-    .info-row .v,
-    .info-row .v a {
-      color: #fff;
-      font-size: 0.95rem;
-      text-decoration: none;
-      line-height: 1.5;
-    }
-
-    .info-row .v a:hover {
-      color: var(--accent);
-    }
+    /* Count block */
+    .count { text-align: right; }
+    .count .num { font-family: var(--display); font-weight: 600; font-size: clamp(3rem, 8vw, 5rem); line-height: 0.9; color: var(--violet); letter-spacing: -0.02em; }
+    .count .lbl { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-top: 0.4rem; }
 
     /* ---------- Games ---------- */
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2.5rem;
-    }
-
+    .games { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; }
     .game-card {
-      display: flex;
-      flex-direction: column;
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
+      position: relative; display: flex; flex-direction: column;
+      background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden;
       transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
     }
-
-    .game-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(139, 125, 255, 0.4);
-      background: rgba(255, 255, 255, 0.05);
-    }
-
+    a.game-card:hover { transform: translateY(-4px); border-color: rgba(139,125,255,0.4); background: rgba(255,255,255,0.05); }
     .game-art {
-      aspect-ratio: 16 / 9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      aspect-ratio: 16 / 10; display: flex; align-items: center; justify-content: center; position: relative;
       background:
-        radial-gradient(120% 120% at 30% 20%, rgba(139, 125, 255, 0.35), transparent 55%),
-        radial-gradient(120% 120% at 80% 90%, rgba(60, 80, 200, 0.35), transparent 55%),
+        radial-gradient(120% 130% at 28% 18%, rgba(139,125,255,0.4), transparent 55%),
+        radial-gradient(120% 130% at 82% 92%, rgba(60,80,200,0.4), transparent 55%),
         #12121f;
-      position: relative;
     }
+    .game-art .art-title { font-family: var(--display); font-weight: 400; font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: 0.1em; text-align: center; padding: 0 1.5rem; text-shadow: 0 2px 24px rgba(0,0,0,0.6); }
+    .game-art .moon { position: absolute; top: 18%; right: 16%; width: 42px; height: 42px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fdfbff, #cfc7ff 60%, #9a8fe0); box-shadow: 0 0 34px rgba(207,199,255,0.55); }
+    .game-body { padding: 1.6rem 1.6rem 1.8rem; }
+    .game-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+    .tag { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: rgba(255,255,255,0.06); border: 1px solid var(--card-border); padding: 0.28rem 0.65rem; border-radius: 999px; }
+    .tag.status { color: #b9f6c8; border-color: rgba(120,240,160,0.25); background: rgba(120,240,160,0.08); }
+    .game-body h3 { font-family: var(--display); font-size: 1.4rem; font-weight: 500; letter-spacing: 0.01em; margin-bottom: 0.5rem; }
+    .game-body p { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.25rem; }
+    .game-actions { display: flex; align-items: center; gap: 1.5rem; }
+    .game-link { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--violet); }
+    .game-sublink { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; color: var(--faint); }
+    .game-sublink:hover { color: #fff; }
+    .game-card.placeholder { align-items: center; justify-content: center; text-align: center; border-style: dashed; padding: 3rem 1.5rem; }
+    .game-card.placeholder .plus { font-size: 2rem; color: var(--faint); margin-bottom: 0.75rem; }
+    .game-card.placeholder p { color: var(--faint); font-size: 0.9rem; }
 
-    .game-art .art-title {
-      font-size: 1.4rem;
-      font-weight: 300;
-      letter-spacing: 0.12em;
-      text-align: center;
-      padding: 0 1.5rem;
-      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
-    }
+    /* ---------- Studio (about) ---------- */
+    .studio-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 3rem; align-items: start; }
+    .studio-copy p { color: var(--muted); margin-bottom: 1.25rem; max-width: 56ch; }
+    .studio-copy p:last-child { margin-bottom: 0; }
+    .studio-copy strong { color: #fff; font-weight: 500; }
+    .studio-copy a { color: var(--violet); }
+    .principles { list-style: none; display: grid; gap: 1.1rem; }
+    .principles li { position: relative; padding-left: 1.6rem; color: var(--muted); font-size: 0.95rem; }
+    .principles li::before { content: ''; position: absolute; left: 0; top: 0.55rem; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--violet); }
+    .principles li strong { display: block; color: #fff; font-family: var(--display); font-weight: 500; font-size: 1rem; margin-bottom: 0.15rem; }
 
-    .game-body {
-      padding: 1.5rem 1.5rem 1.75rem;
-    }
-
-    .game-tags {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 0.9rem;
-    }
-
-    .tag {
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--card-border);
-      padding: 0.25rem 0.65rem;
-      border-radius: 999px;
-    }
-
-    .tag.status {
-      color: #b9f6c8;
-      border-color: rgba(120, 240, 160, 0.25);
-      background: rgba(120, 240, 160, 0.08);
-    }
-
-    .game-body h3 {
-      font-size: 1.25rem;
-      font-weight: 400;
-      letter-spacing: 0.03em;
-      margin-bottom: 0.5rem;
-    }
-
-    .game-body p {
-      color: var(--muted);
-      font-size: 0.92rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .game-link {
-      font-size: 0.8rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-
-    .game-card.placeholder {
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      border-style: dashed;
-      min-height: 100%;
-      padding: 3rem 1.5rem;
-    }
-
-    .game-card.placeholder .plus {
-      font-size: 2rem;
-      color: var(--faint);
-      margin-bottom: 0.75rem;
-    }
-
-    .game-card.placeholder p {
-      color: var(--faint);
-      font-size: 0.9rem;
-    }
+    /* ---------- Support band ---------- */
+    .support-band { display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center; background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 2.25rem 2.5rem; }
+    .support-band h3 { font-family: var(--display); font-weight: 500; font-size: 1.35rem; margin-bottom: 0.4rem; }
+    .support-band p { color: var(--muted); font-size: 0.95rem; }
+    .support-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .support-links a { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--violet); white-space: nowrap; }
+    .support-links a:hover { color: var(--violet-2); }
 
     /* ---------- Footer ---------- */
-    footer {
-      position: relative;
-      z-index: 1;
-      border-top: 1px solid var(--line);
-      background: rgba(8, 8, 13, 0.9);
-    }
-
-    .footer-inner {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 3.5rem 2rem 2.5rem;
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr;
-      gap: 2.5rem;
-    }
-
-    .footer-brand .name {
-      font-size: 0.9rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-
-    .footer-brand p {
-      color: var(--faint);
-      font-size: 0.85rem;
-      max-width: 40ch;
-    }
-
-    .footer-col h4 {
-      font-size: 0.72rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--faint);
-      margin-bottom: 1rem;
-      font-weight: 500;
-    }
-
-    .footer-col a {
-      display: block;
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      margin-bottom: 0.6rem;
-      transition: color 0.3s ease;
-    }
-
-    .footer-col a:hover {
-      color: #fff;
-    }
-
-    .footer-bottom {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 1.5rem 2rem 2.5rem;
-      border-top: 1px solid var(--line);
-      color: var(--faint);
-      font-size: 0.8rem;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
+    .site-footer { position: relative; z-index: 2; background: var(--bg-2); border-top: 1px solid var(--line); }
+    .site-footer .wrap { padding-block: 3.25rem; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 2.5rem; }
+    .foot-brand .name { font-family: var(--display); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.9rem; }
+    .foot-brand p { color: var(--faint); font-size: 0.85rem; max-width: 32ch; }
+    .foot-col h4 { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); margin-bottom: 1rem; }
+    .foot-col a { display: block; color: var(--muted); font-size: 0.9rem; margin-bottom: 0.6rem; transition: color 0.2s ease; }
+    .foot-col a:hover { color: #fff; }
+    .foot-bottom { border-top: 1px solid var(--line); }
+    .foot-bottom .wrap { padding-block: 1.5rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.08em; color: var(--faint); }
 
     /* ---------- Responsive ---------- */
-    @media (max-width: 820px) {
-      .company-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-
-      .footer-inner {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .footer-brand {
-        grid-column: 1 / -1;
-      }
+    @media (max-width: 860px) {
+      .games { grid-template-columns: 1fr; }
+      .studio-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .support-band { grid-template-columns: 1fr; }
+      .site-footer .wrap { grid-template-columns: 1fr 1fr; }
+      .foot-brand { grid-column: 1 / -1; }
     }
-
     @media (max-width: 560px) {
-      .topbar {
-        padding: 1rem 1.25rem;
-      }
-
-      .topbar nav {
-        gap: 0.9rem;
-      }
-
-      .topbar nav a {
-        font-size: 0.68rem;
-        letter-spacing: 0.08em;
-      }
-
-      .hero .logo {
-        font-size: 2.1rem;
-        letter-spacing: 0.14em;
-        overflow-wrap: anywhere;
-      }
-
-      .hero .tagline {
-        font-size: 1rem;
-      }
-
-      .section-inner {
-        padding: 4rem 1.5rem;
-      }
-
-      .footer-inner {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
+      .wrap { padding-inline: 1.5rem; }
+      .site-nav { gap: 1.1rem; }
+      .site-nav a { font-size: 0.66rem; letter-spacing: 0.08em; }
+      .hero-stats { gap: 1.5rem; }
+      .section-head { flex-direction: column; align-items: flex-start; }
+      .count { text-align: left; }
     }
   </style>
 </head>
 <body>
-  <canvas id="starfield"></canvas>
-
-  <header class="topbar" id="topbar">
-    <a href="/" class="brand">Determinix</a>
-    <nav>
-      <a href="#games">Games</a>
-      <a href="#company">Studio</a>
-      <a href="/support.html">Support</a>
-    </nav>
+  <header class="site-header" id="siteHeader">
+    <div class="wrap">
+      <a class="lockup" href="/" aria-label="Determinix Studio home">
+        <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+          <g fill="none" stroke="#8b7dff" stroke-width="2.4" stroke-linecap="round"><path d="M11 7.4 V24.6"/><circle cx="19" cy="16" r="8"/></g>
+          <circle cx="19" cy="8" r="2.2" fill="#8b7dff"/>
+        </svg>
+        <span class="words"><span class="name">Determinix</span><span class="sub">Studio</span></span>
+      </a>
+      <nav class="site-nav">
+        <a href="#games">Games</a>
+        <a href="#studio">Studio</a>
+        <a href="#support">Support</a>
+      </nav>
+    </div>
   </header>
 
   <!-- Hero -->
-  <div class="hero">
-    <div class="eyebrow">Independent Game Studio</div>
-    <h1 class="logo">Determinix Studio</h1>
-    <p class="tagline">We craft original, thoughtfully designed games for the devices you carry every day.</p>
-    <a href="#games" class="scroll-cue">Explore<span>&darr;</span></a>
-  </div>
+  <section class="hero">
+    <canvas id="curve" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <span class="eyebrow mono">Independent Game Studio</span>
+      <h1>Determinix Studio</h1>
+      <p class="tagline">We build original, systems-driven games — worlds that keep running, and reward you for coming back.</p>
+      <div class="hero-stats">
+        <div class="s"><div class="v">01</div><div class="k">Title</div></div>
+        <div class="s"><div class="v">iOS &amp; Android</div><div class="k">Platforms</div></div>
+        <div class="s"><div class="v">Wyoming, USA</div><div class="k">Based</div></div>
+      </div>
+    </div>
+    <a href="#games" class="scroll-cue"><span class="lbl">Games</span><span aria-hidden="true">&darr;</span></a>
+  </section>
 
   <!-- Games -->
-  <section id="games" class="section-band">
-    <div class="section-inner">
-      <div class="section-label">Our Games</div>
-      <h2 class="section-title">Titles in the Determinix universe</h2>
-      <p style="color: var(--muted); max-width: 58ch;">Each title is built in-house from concept to launch. Here's what we're working on now.</p>
+  <section class="section" id="games">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="section-label mono">Games</span>
+          <h2 class="section-title">What we're building</h2>
+          <p class="section-note">We ship a small number of games and support them for the long haul. Here's what's in the works.</p>
+        </div>
+        <div class="count">
+          <div class="num">01</div>
+          <div class="lbl">Title &middot; in development</div>
+        </div>
+      </div>
 
-      <div class="games-grid">
+      <div class="games">
         <a href="/nightfall.html" class="game-card">
           <div class="game-art">
+            <div class="moon"></div>
             <span class="art-title">Nightfall<br>Dream Machine</span>
           </div>
           <div class="game-body">
@@ -529,153 +244,175 @@
               <span class="tag">iOS &amp; Android</span>
             </div>
             <h3>Nightfall: Dream Machine</h3>
-            <p>An atmospheric idle simulation set inside a machine that spins dreams from the fading light of dusk. Build, automate, and watch your world come to life while you're away.</p>
-            <span class="game-link">View game &rarr;</span>
+            <p>An atmospheric idle simulation set inside a machine that spins dreams from the fading light of dusk. Build, automate, and return to a world that grew while you were away.</p>
+            <div class="game-actions">
+              <span class="game-link">View game &rarr;</span>
+              <span class="game-sublink">Support</span>
+            </div>
           </div>
         </a>
 
         <div class="game-card placeholder">
           <div class="plus">+</div>
-          <p>More titles in the works.<br>Stay tuned.</p>
+          <p>More titles in the works.<br>Built one at a time.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Company -->
-  <section id="company" class="section-band">
-    <div class="section-inner">
-      <div class="section-label">Studio</div>
-      <h2 class="section-title">Original games, crafted in-house</h2>
-
-      <div class="company-grid">
-        <div class="company-copy">
-          <p><strong>Determinix Studio</strong> is an independent game studio. We design, build, and ship original games for iOS and Android — carrying each title from its first prototype through to the updates that follow long after launch.</p>
-          <p>We're drawn to atmospheric, mechanically rich games with a strong sense of place: worlds that reward curiosity and keep unfolding the more time you spend in them.</p>
-          <p>Determinix Studio is the games division of <a href="https://determinix.com" style="color:var(--accent);text-decoration:none;"><strong>Determinix Holdings LLC</strong></a>, a Wyoming company.</p>
+  <!-- Studio -->
+  <section class="section" id="studio">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="section-label mono">The Studio</span>
+          <h2 class="section-title">Systems you can trust to keep going.</h2>
         </div>
+      </div>
+      <div class="studio-grid">
+        <div class="studio-copy">
+          <p><strong>Determinix Studio</strong> is a small, independent game studio. We design and build original games for iOS and Android — carrying each title from its first prototype through the updates that follow long after launch.</p>
+          <p>Our name is our approach. We're drawn to <strong>deterministic worlds</strong>: games built on clear, dependable systems that behave the same way every time, keep running while you're away, and reward the curiosity you bring back to them.</p>
+          <p>Determinix Studio is the games division of <a href="https://determinix.com">Determinix Holdings LLC</a>, a Wyoming company.</p>
+        </div>
+        <ul class="principles">
+          <li><strong>Systems over spectacle</strong>Deep, legible mechanics you can actually master.</li>
+          <li><strong>Made to last</strong>Fewer games, supported for the long haul.</li>
+          <li><strong>Fair by default</strong>Clear privacy, honest pricing, no dark patterns.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
-        <div class="info-card">
-          <h3>Company Details</h3>
-          <div class="info-row">
-            <span class="k">Legal Entity</span>
-            <span class="v"><a href="https://determinix.com">Determinix Holdings LLC</a></span>
-          </div>
-          <div class="info-row">
-            <span class="k">Relationship</span>
-            <span class="v">Games division</span>
-          </div>
-          <div class="info-row">
-            <span class="k">Registered Office</span>
-            <span class="v">30 N Gould Street, Ste R<br>Sheridan, WY 82801<br>United States</span>
-          </div>
-          <div class="info-row">
-            <span class="k">Contact</span>
-            <span class="v">
-              <a href="mailto:support@determinix.com">support@determinix.com</a><br>
-              <a href="tel:+13072009610">+1 307 200 9610</a>
-            </span>
-          </div>
+  <!-- Support -->
+  <section class="section" id="support">
+    <div class="wrap">
+      <div class="support-band">
+        <div>
+          <span class="section-label mono" style="display:block; margin-bottom:0.75rem;">Support</span>
+          <h3>Need a hand with one of our games?</h3>
+          <p>Reach us directly, or manage your account and data anytime.</p>
+        </div>
+        <div class="support-links">
+          <a href="/support.html">Support &amp; FAQ</a>
+          <a href="/account.html">Account &amp; Data</a>
+          <a href="mailto:support@determinix.com">Email us</a>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-brand">
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-brand">
         <div class="name">Determinix Studio</div>
         <p>An independent game studio building original games for iOS and Android. The games division of <a href="https://determinix.com" style="color:var(--muted);">Determinix Holdings LLC</a>.</p>
       </div>
-      <div class="footer-col">
-        <h4>Explore</h4>
-        <a href="#games">Games</a>
+      <div class="foot-col">
+        <h4>Games</h4>
         <a href="/nightfall.html">Nightfall: Dream Machine</a>
-        <a href="#company">Studio</a>
+        <a href="#games">All games</a>
       </div>
-      <div class="footer-col">
-        <h4>Resources</h4>
+      <div class="foot-col">
+        <h4>Studio</h4>
+        <a href="#studio">About</a>
+        <a href="https://determinix.com">Determinix Holdings</a>
+      </div>
+      <div class="foot-col">
+        <h4>Support</h4>
         <a href="/support.html">Support</a>
-        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/privacy.html">Privacy</a>
         <a href="/account.html">Account &amp; Deletion</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span>&copy; 2026 Determinix Holdings LLC. All rights reserved.</span>
-      <span>Sheridan, Wyoming, United States</span>
+    <div class="foot-bottom">
+      <div class="wrap">
+        <span>&copy; 2026 Determinix Holdings LLC</span>
+        <span>Determinix Studio &middot; Sheridan, Wyoming</span>
+      </div>
     </div>
   </footer>
 
   <script>
-    // Starfield
-    const canvas = document.getElementById('starfield');
+    // Header background on scroll
+    const header = document.getElementById('siteHeader');
+    addEventListener('scroll', () => header.classList.toggle('scrolled', scrollY > 40), { passive: true });
+
+    // ---- Deterministic curve (harmonograph) — a fixed seed, the same path every time ----
+    const canvas = document.getElementById('curve');
     const ctx = canvas.getContext('2d');
+    let W, H, DPR, cx, cy, scale;
 
-    let stars = [];
-    let mouseX = 0;
-    let mouseY = 0;
+    // Fixed "seed" — a deterministic spirograph rosette that spirals inward.
+    // No randomness: the same figure, traced the same way, every load.
+    const ROSE = { A: 1.0, B: 0.42, k: 6.0, phi: 0.0, d: 0.0075 };
+    let pts = [];
 
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      initStars();
-    }
-
-    function initStars() {
-      stars = [];
-      const numStars = Math.floor((canvas.width * canvas.height) / 3000);
-      for (let i = 0; i < numStars; i++) {
-        stars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          size: Math.random() * 1.5 + 0.5,
-          depth: Math.random() * 3 + 1,
-          baseAlpha: Math.random() * 0.5 + 0.3,
-          twinkleSpeed: Math.random() * 0.02 + 0.01,
-          twinkleOffset: Math.random() * Math.PI * 2
-        });
+    function buildPoints() {
+      pts = [];
+      const dt = 0.07, T = 240;
+      for (let t = 0; t <= T; t += dt) {
+        const e = Math.exp(-ROSE.d * t);
+        const x = e * (ROSE.A * Math.cos(t) + ROSE.B * Math.cos(ROSE.k * t + ROSE.phi));
+        const y = e * (ROSE.A * Math.sin(t) + ROSE.B * Math.sin(ROSE.k * t + ROSE.phi));
+        pts.push([x, y]);
       }
     }
 
-    function draw(time) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#0a0a0f';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
-      const offsetX = (mouseX - centerX) / centerX;
-      const offsetY = (mouseY - centerY) / centerY;
-
-      stars.forEach(star => {
-        const parallaxX = star.x + (offsetX * star.depth * 20);
-        const parallaxY = star.y + (offsetY * star.depth * 20);
-        const twinkle = Math.sin(time * star.twinkleSpeed + star.twinkleOffset) * 0.3 + 0.7;
-        const alpha = star.baseAlpha * twinkle;
-        ctx.beginPath();
-        ctx.arc(parallaxX, parallaxY, star.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.fill();
-      });
-
-      requestAnimationFrame(draw);
+    function resize() {
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      W = canvas.clientWidth; H = canvas.clientHeight;
+      canvas.width = W * DPR; canvas.height = H * DPR;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      cx = W / 2; cy = H * 0.46;
+      scale = Math.min(W, H) * 0.32 / 1.42;
     }
 
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
+    function project(pt) { return [cx + pt[0] * scale, cy + pt[1] * scale]; }
 
-    // Topbar background on scroll
-    const topbar = document.getElementById('topbar');
-    window.addEventListener('scroll', () => {
-      topbar.classList.toggle('scrolled', window.scrollY > 40);
-    });
+    function drawPath(from, to, style, width, glow) {
+      ctx.beginPath();
+      for (let i = from; i < to; i++) {
+        const [x, y] = project(pts[i]);
+        if (i === from) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = style; ctx.lineWidth = width;
+      ctx.shadowBlur = glow; ctx.shadowColor = 'rgba(139,125,255,0.8)';
+      ctx.lineJoin = 'round'; ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
 
-    window.addEventListener('resize', resize);
-    resize();
-    requestAnimationFrame(draw);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let idx = 0, holding = 0;
+
+    function frame() {
+      ctx.clearRect(0, 0, W, H);
+      // ghost of the full, deterministic figure
+      drawPath(0, pts.length, 'rgba(139,125,255,0.08)', 1, 0);
+      // the bright tracer
+      drawPath(0, idx, 'rgba(184,170,255,0.7)', 1.3, 7);
+      // the head — a single determined point, echoing the logo
+      if (idx > 0 && idx < pts.length) {
+        const [hx, hy] = project(pts[idx - 1]);
+        ctx.beginPath(); ctx.arc(hx, hy, 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff'; ctx.shadowBlur = 16; ctx.shadowColor = 'rgba(139,125,255,0.9)'; ctx.fill(); ctx.shadowBlur = 0;
+      }
+      idx += 10;
+      if (idx >= pts.length) {
+        idx = pts.length;
+        if (++holding > 150) { idx = 0; holding = 0; }  // hold, then retrace the same path
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function start() {
+      resize(); buildPoints();
+      if (reduce) { ctx.clearRect(0,0,W,H); drawPath(0, pts.length, 'rgba(160,146,255,0.55)', 1.3, 6); }
+      else requestAnimationFrame(frame);
+    }
+    addEventListener('resize', () => { resize(); if (reduce) { ctx.clearRect(0,0,W,H); drawPath(0, pts.length, 'rgba(160,146,255,0.55)', 1.3, 6); } });
+    start();
   </script>
 </body>
 </html>

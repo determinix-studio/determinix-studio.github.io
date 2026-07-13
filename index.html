@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Determinix Studio</title>
+  <title>Determinix Studio — Game Development</title>
+  <meta name="description" content="Determinix Studio is an independent game studio building original games for iOS and Android. Part of Determinix Holdings LLC.">
   <style>
     * {
       margin: 0;
@@ -11,12 +12,30 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg: #0a0a0f;
+      --text: #ffffff;
+      --muted: rgba(255, 255, 255, 0.7);
+      --faint: rgba(255, 255, 255, 0.45);
+      --line: rgba(255, 255, 255, 0.1);
+      --card: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #8b7dff;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-      background: #0a0a0f;
-      color: #fff;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
       overflow-x: hidden;
+      max-width: 100%;
+      line-height: 1.7;
     }
 
     #starfield {
@@ -28,7 +47,58 @@
       z-index: 0;
     }
 
-    .content {
+    /* ---------- Top nav ---------- */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background: rgba(10, 10, 15, 0.4);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s ease, background 0.3s ease;
+    }
+
+    .topbar.scrolled {
+      background: rgba(10, 10, 15, 0.8);
+      border-bottom-color: var(--line);
+    }
+
+    .brand {
+      font-size: 0.9rem;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .topbar nav {
+      display: flex;
+      gap: 1.75rem;
+    }
+
+    .topbar nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+    }
+
+    .topbar nav a:hover {
+      color: #fff;
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
       position: relative;
       z-index: 1;
       min-height: 100vh;
@@ -36,48 +106,386 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      text-align: center;
       padding: 2rem;
     }
 
-    .logo {
-      font-size: 3rem;
+    .hero .logo {
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
       font-weight: 300;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+
+    .hero .tagline {
+      margin-top: 1.75rem;
+      max-width: 32ch;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .hero .eyebrow {
+      margin-bottom: 1.5rem;
+      font-size: 0.75rem;
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      text-align: center;
+      color: var(--faint);
     }
 
-    nav {
-      margin-top: 3rem;
+    .scroll-cue {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--faint);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
       display: flex;
-      gap: 2rem;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      animation: float 2.4s ease-in-out infinite;
     }
 
-    nav a {
-      color: rgba(255, 255, 255, 0.7);
-      text-decoration: none;
-      font-size: 0.875rem;
-      letter-spacing: 0.1em;
-      transition: color 0.3s ease;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid transparent;
+    .scroll-cue span {
+      font-size: 1rem;
     }
 
-    nav a:hover {
+    @keyframes float {
+      0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.6; }
+      50% { transform: translateX(-50%) translateY(6px); opacity: 1; }
+    }
+
+    /* ---------- Sections ---------- */
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+
+    .section-band {
+      background: linear-gradient(180deg, rgba(10, 10, 15, 0) 0%, rgba(13, 13, 22, 0.85) 12%, rgba(13, 13, 22, 0.85) 88%, rgba(10, 10, 15, 0) 100%);
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ---------- Company ---------- */
+    .company-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .company-copy p {
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+      max-width: 60ch;
+    }
+
+    .company-copy p:last-child {
+      margin-bottom: 0;
+    }
+
+    .company-copy strong {
       color: #fff;
-      border-bottom-color: rgba(255, 255, 255, 0.3);
+      font-weight: 500;
     }
 
-    @media (max-width: 480px) {
-      .logo {
-        font-size: 2rem;
-        letter-spacing: 0.2em;
+    .info-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+
+    .info-card h3 {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 1.25rem;
+      font-weight: 500;
+    }
+
+    .info-row {
+      margin-bottom: 1.25rem;
+    }
+
+    .info-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-row .k {
+      display: block;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 0.25rem;
+    }
+
+    .info-row .v,
+    .info-row .v a {
+      color: #fff;
+      font-size: 0.95rem;
+      text-decoration: none;
+      line-height: 1.5;
+    }
+
+    .info-row .v a:hover {
+      color: var(--accent);
+    }
+
+    /* ---------- Games ---------- */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .game-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(139, 125, 255, 0.4);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .game-art {
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(120% 120% at 30% 20%, rgba(139, 125, 255, 0.35), transparent 55%),
+        radial-gradient(120% 120% at 80% 90%, rgba(60, 80, 200, 0.35), transparent 55%),
+        #12121f;
+      position: relative;
+    }
+
+    .game-art .art-title {
+      font-size: 1.4rem;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      text-align: center;
+      padding: 0 1.5rem;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .game-body {
+      padding: 1.5rem 1.5rem 1.75rem;
+    }
+
+    .game-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.9rem;
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+    }
+
+    .tag.status {
+      color: #b9f6c8;
+      border-color: rgba(120, 240, 160, 0.25);
+      background: rgba(120, 240, 160, 0.08);
+    }
+
+    .game-body h3 {
+      font-size: 1.25rem;
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.5rem;
+    }
+
+    .game-body p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .game-link {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .game-card.placeholder {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-style: dashed;
+      min-height: 100%;
+      padding: 3rem 1.5rem;
+    }
+
+    .game-card.placeholder .plus {
+      font-size: 2rem;
+      color: var(--faint);
+      margin-bottom: 0.75rem;
+    }
+
+    .game-card.placeholder p {
+      color: var(--faint);
+      font-size: 0.9rem;
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--line);
+      background: rgba(8, 8, 13, 0.9);
+    }
+
+    .footer-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 2.5rem;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 2.5rem;
+    }
+
+    .footer-brand .name {
+      font-size: 0.9rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .footer-brand p {
+      color: var(--faint);
+      font-size: 0.85rem;
+      max-width: 40ch;
+    }
+
+    .footer-col h4 {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .footer-col a {
+      display: block;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 0.6rem;
+      transition: color 0.3s ease;
+    }
+
+    .footer-col a:hover {
+      color: #fff;
+    }
+
+    .footer-bottom {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem 2.5rem;
+      border-top: 1px solid var(--line);
+      color: var(--faint);
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 820px) {
+      .company-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
       }
 
-      nav {
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-brand {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .topbar {
+        padding: 1rem 1.25rem;
+      }
+
+      .topbar nav {
+        gap: 0.9rem;
+      }
+
+      .topbar nav a {
+        font-size: 0.68rem;
+        letter-spacing: 0.08em;
+      }
+
+      .hero .logo {
+        font-size: 2.1rem;
+        letter-spacing: 0.14em;
+        overflow-wrap: anywhere;
+      }
+
+      .hero .tagline {
+        font-size: 1rem;
+      }
+
+      .section-inner {
+        padding: 4rem 1.5rem;
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 2rem;
       }
     }
   </style>
@@ -85,16 +493,122 @@
 <body>
   <canvas id="starfield"></canvas>
 
-  <div class="content">
-    <h1 class="logo">Determinix Studio</h1>
-
+  <header class="topbar" id="topbar">
+    <a href="/" class="brand">Determinix</a>
     <nav>
-      <a href="/privacy.html">Privacy</a>
+      <a href="#games">Games</a>
+      <a href="#company">Studio</a>
       <a href="/support.html">Support</a>
     </nav>
+  </header>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="eyebrow">Independent Game Studio</div>
+    <h1 class="logo">Determinix Studio</h1>
+    <p class="tagline">We craft original, thoughtfully designed games for the devices you carry every day.</p>
+    <a href="#games" class="scroll-cue">Explore<span>&darr;</span></a>
   </div>
 
+  <!-- Games -->
+  <section id="games" class="section-band">
+    <div class="section-inner">
+      <div class="section-label">Our Games</div>
+      <h2 class="section-title">Titles in the Determinix universe</h2>
+      <p style="color: var(--muted); max-width: 58ch;">Each title is built in-house from concept to launch. Here's what we're working on now.</p>
+
+      <div class="games-grid">
+        <a href="/nightfall.html" class="game-card">
+          <div class="game-art">
+            <span class="art-title">Nightfall<br>Dream Machine</span>
+          </div>
+          <div class="game-body">
+            <div class="game-tags">
+              <span class="tag status">In Development</span>
+              <span class="tag">Idle / Sim</span>
+              <span class="tag">iOS &amp; Android</span>
+            </div>
+            <h3>Nightfall: Dream Machine</h3>
+            <p>An atmospheric idle simulation set inside a machine that spins dreams from the fading light of dusk. Build, automate, and watch your world come to life while you're away.</p>
+            <span class="game-link">View game &rarr;</span>
+          </div>
+        </a>
+
+        <div class="game-card placeholder">
+          <div class="plus">+</div>
+          <p>More titles in the works.<br>Stay tuned.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Company -->
+  <section id="company" class="section-band">
+    <div class="section-inner">
+      <div class="section-label">Studio</div>
+      <h2 class="section-title">Original games, crafted in-house</h2>
+
+      <div class="company-grid">
+        <div class="company-copy">
+          <p><strong>Determinix Studio</strong> is an independent game studio. We design, build, and ship original games for iOS and Android — carrying each title from its first prototype through to the updates that follow long after launch.</p>
+          <p>We're drawn to atmospheric, mechanically rich games with a strong sense of place: worlds that reward curiosity and keep unfolding the more time you spend in them.</p>
+          <p>Determinix Studio is the games division of <a href="https://determinix.com" style="color:var(--accent);text-decoration:none;"><strong>Determinix Holdings LLC</strong></a>, a Wyoming company.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>Company Details</h3>
+          <div class="info-row">
+            <span class="k">Legal Entity</span>
+            <span class="v"><a href="https://determinix.com">Determinix Holdings LLC</a></span>
+          </div>
+          <div class="info-row">
+            <span class="k">Relationship</span>
+            <span class="v">Games division</span>
+          </div>
+          <div class="info-row">
+            <span class="k">Registered Office</span>
+            <span class="v">30 N Gould Street, Ste R<br>Sheridan, WY 82801<br>United States</span>
+          </div>
+          <div class="info-row">
+            <span class="k">Contact</span>
+            <span class="v">
+              <a href="mailto:support@determinix.com">support@determinix.com</a><br>
+              <a href="tel:+13072009610">+1 307 200 9610</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="name">Determinix Studio</div>
+        <p>An independent game studio building original games for iOS and Android. The games division of <a href="https://determinix.com" style="color:var(--muted);">Determinix Holdings LLC</a>.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <a href="#games">Games</a>
+        <a href="/nightfall.html">Nightfall: Dream Machine</a>
+        <a href="#company">Studio</a>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a href="/support.html">Support</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/account.html">Account &amp; Deletion</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Determinix Holdings LLC. All rights reserved.</span>
+      <span>Sheridan, Wyoming, United States</span>
+    </div>
+  </footer>
+
   <script>
+    // Starfield
     const canvas = document.getElementById('starfield');
     const ctx = canvas.getContext('2d');
 
@@ -111,7 +625,6 @@
     function initStars() {
       stars = [];
       const numStars = Math.floor((canvas.width * canvas.height) / 3000);
-
       for (let i = 0; i < numStars; i++) {
         stars.push({
           x: Math.random() * canvas.width,
@@ -126,6 +639,7 @@
     }
 
     function draw(time) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = '#0a0a0f';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -137,10 +651,8 @@
       stars.forEach(star => {
         const parallaxX = star.x + (offsetX * star.depth * 20);
         const parallaxY = star.y + (offsetY * star.depth * 20);
-
         const twinkle = Math.sin(time * star.twinkleSpeed + star.twinkleOffset) * 0.3 + 0.7;
         const alpha = star.baseAlpha * twinkle;
-
         ctx.beginPath();
         ctx.arc(parallaxX, parallaxY, star.size, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
@@ -153,6 +665,12 @@
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
+    });
+
+    // Topbar background on scroll
+    const topbar = document.getElementById('topbar');
+    window.addEventListener('scroll', () => {
+      topbar.classList.toggle('scrolled', window.scrollY > 40);
     });
 
     window.addEventListener('resize', resize);
